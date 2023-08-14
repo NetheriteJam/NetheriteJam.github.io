@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+	Bubble Calculator
+</head>
+<body>
+	<script>
+		function calc(){
+			let petalCount, bubbleCount;
+			petalCount = document.getElementById('petalcount').value;
+			bubbleCount = document.getElementById('bubblecount').value;
+			let theta = 2 * Math.PI / petalCount;
+			petalCount = parseInt(petalCount);
+			bubbleCount = parseInt(bubbleCount);
+			let ans = 0;
+			if ( bubbleCount % 2 ) {
+				for (let i = 1; i < (bubbleCount + 1) / 2; i += 1 ) {
+					ans += Math.cos(theta * i);
+				}
+				ans *= 2;
+				ans += 1;
+			} else {
+				for (let i = 0; i < bubbleCount / 2; i += 1 ) {
+					ans += Math.cos(theta * (0.5 + i));
+				}
+				ans *= 2;
+			}
+			document.getElementById('ans').innerHTML = ans.toFixed(4);
+		}
+	</script>
+	<input id="petalcount" type="number" placeholder="总花瓣数">
+	<input id="bubblecount" type="number" placeholder="泡泡数">
+	<button onClick="calc()">计算</button>
+	<p id="ans">null</p>
+</body>
