@@ -6,42 +6,31 @@
 <body>
 	<script>
 		const database = {
-			'rrolf': {
-				'llight': {
-					dmg: 57.6,
-					reload: 0.8,
-					rs: 1.1, // extra rotation speed
-				},
-				'elight': {
-					dmg: 36,
-					reload: 0.8,
-					rs: 0.9,
-				},
-				'lpellet': {
-					dmg: 86.4,
-					reload: 0.5,
-				},
-				'epellet': {
-					dmg: 54,
-					reload: 0.5,
-				},
-			},
 			'florr': { // prefix u -> unusual, ul -> ultra
+				'ulsand': {
+					dmg: 14580,
+					reload: 0.9,
+					cnt: 4,
+				},
 				'llight': {
 					dmg: 1053,
 					reload: 0.48,
+					cnt: 3,
 				},
 				'mlight': {
 					dmg: 3159,
 					reload: 0.48,
+					cnt: 5,
 				},
 				'ullight': {
 					dmg: 9477,
 					reload: 0.48,
+					cnt: 5,
 				},
 				'slight': {
 					dmg: 28431,
 					reload: 0.48,
+					cnt: 5,
 				},
 				'cfaster': {
 					dmg: 8,
@@ -105,7 +94,7 @@
 				},
 			},
 		}
-		let selectedDb = 'rrolf'; // default database
+		let selectedDb = 'florr'; // default database
 		let db = database[selectedDb];
 		const cnt = 10; // total petals
 		for (let i = 0; i < cnt; i ++ ) {
@@ -118,7 +107,7 @@
 		}
 		document.body.append(document.createElement('br'));
 		function calc(){
-			let totRs = 2.5; // base rotation speed
+			let totRs = 4; // base rotation speed
 			let petals = [];
 			let undef = false;
 			let ex = 0;
@@ -140,14 +129,14 @@
 					if ( db[petal].ex ) {
 						ex = Math.max(ex, db[petal].ex);
 					}
-				})
+				});
 
 				let time = 360 / (totRs * 180 / Math.PI);
 
 				let dps = 0;
 
 				petals.forEach(petal => {
-					dps += (db[petal].dmg + ex) / Math.max(db[petal].reload, time);
+					dps += (db[petal].dmg + ex * ((db[petal].cnt === undefined) ? 1 : db[petal].cnt)) / Math.max(db[petal].reload, time);
 				});
 
 				document.getElementById('ans').innerHTML = dps;
@@ -168,12 +157,12 @@
 			}
 		}
 	</script>
-	<input id="db" type="text" placeholder="Database(rrolf/florr)">
+	<input id="db" type="text" placeholder="Database(florr)">
 	<br>
 	<button onClick="setDb()">Select(Refresh) Database</button>
 	<button onClick="calc()">Calculate DPS</button>
 	<button onClick="clr()">Clear</button>
-	<p>default database is rrolf</p>
+	<p>default database is florr</p>
 	<p>DPS:</p>
 	<p id="ans">null</p>
 </body>
