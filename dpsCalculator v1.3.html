@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<head>
+	DPS Calculator V1.3
+	<!-- by netheritejam -->
+</head>
+<body>
+	<script>
+		const database = {
+			'florr': { // prefix u -> unusual, ul -> ultra
+				'ssand': {
+					dmg: 43740,
+					reload: 0.9,
+					cnt: 4,
+				},
+				'ulsand': {
+					dmg: 14580,
+					reload: 0.9,
+					cnt: 4,
+				},
+				'msand': {
+					dmg: 4860,
+					reload: 0.9,
+					cnt: 4,
+				},
+				'msand': {
+					dmg: 1620,
+					reload: 0.9,
+					cnt: 4,
+				},
+				'llight': {
+					dmg: 1053,
+					reload: 0.48,
+					cnt: 3,
+				},
+				'mlight': {
+					dmg: 3159,
+					reload: 0.48,
+					cnt: 5,
+				},
+				'ullight': {
+					dmg: 9477,
+					reload: 0.48,
+					cnt: 5,
+				},
+				'slight': {
+					dmg: 28431,
+					reload: 0.48,
+					cnt: 5,
+				},
+				'cfaster': {
+					dmg: 8,
+					reload: 1.5,
+					rs: 0.5,
+				},
+				'ufaster': {
+					dmg: 24,
+					reload: 1.5,
+					rs: 0.7,
+				},
+				'rfaster': {
+					dmg: 72,
+					reload: 1.5,
+					rs: 0.9,
+				},
+				'efaster': {
+					dmg: 216,
+					reload: 1.5,
+					rs: 1.1,
+				},
+				'lfaster': {
+					dmg: 648,
+					reload: 1.5,
+					rs: 1.3,
+				},
+				'mfaster': {
+					dmg: 1944,
+					reload: 1.5,
+					rs: 1.5,
+				},
+				'ulfaster': {
+					dmg: 5832,
+					reload: 1.5,
+					rs: 1.7,
+				},
+				'sfaster': {
+					dmg: 17496,
+					reload: 1.5,
+					rs: 1.9,
+				},
+				'lbur': {
+					dmg: 405,
+					reload: 1.2,
+					ex: 162,// extra damage
+				},
+				'mbur': {
+					dmg: 1215,
+					reload: 1.2,
+					ex: 486,
+				},
+				'ulbur': {
+					dmg: 3645,
+					reload: 1.2,
+					ex: 1458,
+				},
+				'sbur': {
+					dmg: 10935,
+					reload: 1.2,
+					ex: 4374,
+				},
+			},
+		}
+		let selectedDb = 'florr'; // default database
+		let db = database[selectedDb];
+		const cnt = 10; // total petals
+		for (let i = 0; i < cnt; i ++ ) {
+			let newInputBox = document.createElement('input');
+			newInputBox.id = `petal${i}`;
+			newInputBox.type = 'text';
+			newInputBox.placeholder = `Petal ${i + 1}`;
+			document.body.append(document.createElement('br'));
+			document.body.append(newInputBox);
+		}
+		document.body.append(document.createElement('br'));
+		function calc(){
+			let totRs = document.getElementById('rotationSpeed').value; // base rotation speed
+			if ( totRs == 0 )
+				totRs = 4;
+			let petals = [];
+			let undef = false;
+			let ex = 0;
+			for (let i = 0; i < cnt; i ++ ) {
+				let petal = document.getElementById(`petal${i}`).value.toLowerCase();
+				if ( petal === '' )
+					continue;
+				undef |= (db[petal] === undefined);
+				petals.push(petal);
+			}
+			if ( undef ) {
+				document.getElementById('ans').innerHTML = 'The petal does not exist in the database.';
+			} else {
+
+				petals.forEach(petal => {
+					if ( db[petal].rs ) {
+						totRs += db[petal].rs;
+					}
+					if ( db[petal].ex ) {
+						ex = Math.max(ex, db[petal].ex);
+					}
+				});
+
+				let time = 360 / (totRs * 180 / Math.PI);
+
+				let dps = 0;
+
+				petals.forEach(petal => {
+					dps += (db[petal].dmg + ex * ((db[petal].cnt === undefined) ? 1 : db[petal].cnt)) / Math.max(db[petal].reload, time);
+				});
+
+				document.getElementById('ans').innerHTML = dps;
+			}
+		}
+		// function setDb() {
+		// 	if ( database[document.getElementById('db').value] !== undefined ) {
+		// 		selectedDb = document.getElementById('db').value;
+		// 		db = database[selectedDb];
+		// 		document.getElementById('ans').innerHTML = `Database has been changed to ${selectedDb}`;
+		// 	} else {
+		// 		document.getElementById('ans').innerHTML = 'Database does not exist.';
+		// 	}
+		// }
+		function clr() {
+			for (let i = 0; i < cnt; i ++ ) {
+				document.getElementById(`petal${i}`).value = '';
+			}
+		}
+	</script>
+	<br>
+	<input id="rotationSpeed" type="text" placeholder="转速(默认4)/rad·(s^-1)">
+	<br>
+	<button onClick="calc()">计算 DPS</button>
+	<button onClick="clr()">清空</button>
+	<br>
+	<p>DPS:</p>
+	<p id="ans">null</p>
+	<p>食用指南: 花瓣用等级+名称表示, 大小写不敏感. 例如mBur, ULsand, Ssand, uLlIgHt.</p>
+	<p>别忘了空出三眼的位置</p>
+	<p>如果没有显示正确的界面, 尝试刷新或使用其他浏览器(e.g. Chrome)</p>
+	<br>
+</body>
